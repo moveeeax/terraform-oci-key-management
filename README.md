@@ -8,7 +8,7 @@ keys and secrets and expose the management and crypto endpoints used by other se
 
 ```hcl
 module "key_management" {
-  source = "github.com/cybercapybara/terraform-oci-key-management"
+  source = "github.com/moveeeax/terraform-oci-key-management"
 
   compartment_id = var.compartment_id
   display_name   = "prod-vault"
