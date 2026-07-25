@@ -9,8 +9,14 @@ module "key_management" {
 
   key = {
     display_name = "example-key"
-    algorithm    = "AES"
-    length       = 32
+
+    # AES-256 in the HSM is what you get without these lines; they are spelled out to
+    # show that length is in bytes rather than bits.
+    algorithm       = "AES"
+    length          = 32
+    protection_mode = "HSM"
+
+    rotation_interval_in_days = 90
   }
 
   freeform_tags = {
