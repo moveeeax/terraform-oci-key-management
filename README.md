@@ -8,7 +8,7 @@ keys and secrets and expose the management and crypto endpoints used by other se
 
 ```hcl
 module "key_management" {
-  source = "github.com/moveeeax/terraform-oci-key-management"
+  source = "github.com/moveeeax/terraform-oci-key-management?ref=v1.0.0"
 
   compartment_id = var.compartment_id
   display_name   = "prod-vault"
@@ -84,7 +84,7 @@ non-production use. Guard production vaults with an OCI IAM policy that denies
 | Name      | Version         |
 |-----------|-----------------|
 | terraform | >= 1.5          |
-| oci       | >= 5.0, < 9.0   |
+| oci       | >= 5.0, < 10.0  |
 
 The test suite under [`tests/`](tests) additionally needs Terraform >= 1.7 for
 `mock_provider`; the module itself still works on 1.5.
