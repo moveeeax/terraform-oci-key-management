@@ -84,7 +84,7 @@ non-production use. Guard production vaults with an OCI IAM policy that denies
 | Name      | Version         |
 |-----------|-----------------|
 | terraform | >= 1.5          |
-| oci       | >= 5.0, < 9.0   |
+| oci       | >= 5.0, < 10.0  |
 
 The test suite under [`tests/`](tests) additionally needs Terraform >= 1.7 for
 `mock_provider`; the module itself still works on 1.5.
