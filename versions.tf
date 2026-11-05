@@ -8,7 +8,7 @@ terraform {
       source = "oracle/oci"
       # Upper bound so a future major release of the provider cannot silently change
       # this module's behaviour.
-      version = ">= 5.0, < 9.0"
+      version = ">= 5.0, < 10.0"
     }
   }
 }
