@@ -133,3 +133,94 @@ run "rejects_rotation_interval_above_maximum" {
   command         = plan
   expect_failures = [var.key]
 }
+
+run "rejects_invalid_algorithm_in_keys" {
+  variables {
+    keys = {
+      bad = {
+        display_name = "bad-key"
+        algorithm    = "Blowfish"
+      }
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.keys]
+}
+
+run "rejects_length_in_bits_in_keys" {
+  variables {
+    keys = {
+      bad = {
+        display_name = "bad-key"
+        length       = 256
+      }
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.keys]
+}
+
+run "rejects_bad_keys_map_key" {
+  variables {
+    keys = {
+      "bad key" = {
+        display_name = "bad-key"
+      }
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.keys]
+}
+
+# A whole statement fragment in a service name would widen the policy.
+run "rejects_statement_text_in_grant_services" {
+  variables {
+    keys = {
+      bad = {
+        display_name   = "bad-key"
+        grant_services = ["blockstorage to manage all-resources in tenancy //"]
+      }
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.keys]
+}
+
+run "rejects_comma_list_in_grant_groups" {
+  variables {
+    key = {
+      display_name = "bad-key"
+      grant_groups = ["Admins, Everyone"]
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.key]
+}
+
+run "rejects_bad_grant_policy_name" {
+  variables {
+    grant_policy_name = "has spaces"
+  }
+
+  command         = plan
+  expect_failures = [var.grant_policy_name]
+}
+
+run "rejects_statement_text_in_grant_groups" {
+  variables {
+    keys = {
+      bad = {
+        display_name = "bad-key"
+        grant_groups = ["Admins to manage all-resources in tenancy where request.user.id = 'x'"]
+      }
+    }
+  }
+
+  command         = plan
+  expect_failures = [var.keys]
+}

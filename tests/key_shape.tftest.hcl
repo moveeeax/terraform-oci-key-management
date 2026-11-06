@@ -31,35 +31,35 @@ run "aes_defaults_to_hsm_protected_aes_256" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].protection_mode == "HSM"
+    condition     = oci_kms_key.this["default"].protection_mode == "HSM"
     error_message = "protection_mode should default to HSM so key material never leaves the HSM."
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].algorithm == "AES"
+    condition     = oci_kms_key.this["default"].key_shape[0].algorithm == "AES"
     error_message = "algorithm should default to AES."
   }
 
   # 32 bytes = AES-256. Anything less would silently be AES-128/192.
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].length == 32
+    condition     = oci_kms_key.this["default"].key_shape[0].length == 32
     error_message = "AES keys should default to 32 bytes (AES-256)."
   }
 
   # curve_id is optional+computed on the resource, so assert on what the module sends
   # rather than on what the provider echoes back.
   assert {
-    condition     = local.key_curve_id == null
+    condition     = local.key_curve_ids["default"] == null
     error_message = "curve_id must not be set for non-ECDSA keys."
   }
 
   assert {
-    condition     = oci_kms_key.this[0].is_auto_rotation_enabled == false
+    condition     = oci_kms_key.this["default"].is_auto_rotation_enabled == false
     error_message = "Automatic rotation should be opt-in."
   }
 
   assert {
-    condition     = length(oci_kms_key.this[0].auto_key_rotation_details) == 0
+    condition     = length(oci_kms_key.this["default"].auto_key_rotation_details) == 0
     error_message = "No rotation schedule should be emitted when rotation_interval_in_days is null."
   }
 }
@@ -75,7 +75,7 @@ run "rsa_defaults_to_rsa_4096" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].length == 512
+    condition     = oci_kms_key.this["default"].key_shape[0].length == 512
     error_message = "RSA keys should default to 512 bytes (RSA-4096)."
   }
 }
@@ -91,12 +91,12 @@ run "ecdsa_pins_curve_and_matching_length" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].curve_id == "NIST_P521"
+    condition     = oci_kms_key.this["default"].key_shape[0].curve_id == "NIST_P521"
     error_message = "ECDSA keys should pin curve_id explicitly rather than inherit the API default."
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].length == 66
+    condition     = oci_kms_key.this["default"].key_shape[0].length == 66
     error_message = "ECDSA key length should be derived from the curve (NIST_P521 = 66 bytes)."
   }
 }
@@ -111,7 +111,7 @@ run "ecdsa_length_follows_explicit_curve" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].length == 48
+    condition     = oci_kms_key.this["default"].key_shape[0].length == 48
     error_message = "NIST_P384 should derive a 48 byte key length."
   }
 }
@@ -126,7 +126,7 @@ run "explicit_length_is_respected" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].key_shape[0].length == 384
+    condition     = oci_kms_key.this["default"].key_shape[0].length == 384
     error_message = "An explicitly supplied length must win over the module default."
   }
 }
@@ -140,12 +140,12 @@ run "rotation_schedule_is_wired_through" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].is_auto_rotation_enabled == true
+    condition     = oci_kms_key.this["default"].is_auto_rotation_enabled == true
     error_message = "Setting rotation_interval_in_days should enable automatic rotation."
   }
 
   assert {
-    condition     = oci_kms_key.this[0].auto_key_rotation_details[0].rotation_interval_in_days == 90
+    condition     = oci_kms_key.this["default"].auto_key_rotation_details[0].rotation_interval_in_days == 90
     error_message = "The requested rotation interval should reach the resource."
   }
 }
@@ -159,7 +159,7 @@ run "software_protection_mode_is_allowed" {
   }
 
   assert {
-    condition     = oci_kms_key.this[0].protection_mode == "SOFTWARE"
+    condition     = oci_kms_key.this["default"].protection_mode == "SOFTWARE"
     error_message = "SOFTWARE should remain a supported, explicit opt-out of HSM protection."
   }
 }
